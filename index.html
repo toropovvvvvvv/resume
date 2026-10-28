@@ -20,6 +20,7 @@
     }
     h1 { font-size: 28px; margin: 0 0 8px; }
     p { margin: 0 0 20px; color: #52525b; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
     a.button {
       display: inline-block;
       padding: 10px 16px;
@@ -28,6 +29,11 @@
       color: #fff;
       text-decoration: none;
       font-weight: 600;
+    }
+    a.button-ghost {
+      background: #fff;
+      color: #18181b;
+      border: 1px solid #18181b;
     }
     iframe {
       width: 100%;
@@ -43,7 +49,10 @@
   <div class="wrap">
     <h1>Егор Торопов</h1>
     <p>Frontend-разработчик · React, TypeScript</p>
-    <a class="button" href="Toropov_Egor_Frontend.pdf">Открыть PDF</a>
+    <div class="actions">
+      <a class="button" href="Toropov_Egor_Frontend.pdf">Открыть PDF</a>
+      <a class="button button-ghost" href="portfolio/">Портфолио</a>
+    </div>
     <iframe src="Toropov_Egor_Frontend.pdf" title="Резюме Егора Торопова"></iframe>
   </div>
 </body>
