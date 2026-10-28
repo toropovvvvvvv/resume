@@ -1,240 +1,286 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Егор Торопов — Frontend-разработчик</title>
-  <meta name="description" content="Frontend-разработчик, React и TypeScript. Архитектура, UI Kit, сложные B2B-интерфейсы." />
+  <meta name="description" content="Frontend-разработчик на React и TypeScript. Архитектура, UI Kit, сложные B2B-интерфейсы." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    (function () {
+      document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    })();
+  </script>
   <style>
     :root {
-      --bg: #12100e;
-      --bg-soft: #1b1814;
-      --ink: #f3ece3;
-      --muted: #b7ab9c;
-      --line: rgba(243, 236, 227, 0.12);
-      --copper: #d98a4a;
-      --copper-soft: rgba(217, 138, 74, 0.16);
+      --bg: #f6f1e8;
+      --bg-elev: #fffdf8;
+      --ink: #1c1915;
+      --muted: #6d665c;
+      --line: rgba(28, 25, 21, 0.1);
+      --accent: #1f6f5b;
+      --accent-soft: rgba(31, 111, 91, 0.1);
+      --shadow: 0 18px 50px rgba(50, 36, 20, 0.08);
+      --photo-ring: #efe6d6;
+    }
+    html[data-theme="dark"] {
+      --bg: #141210;
+      --bg-elev: #1d1a16;
+      --ink: #f4ece1;
+      --muted: #b5ab9e;
+      --line: rgba(244, 236, 225, 0.12);
+      --accent: #7dceb6;
+      --accent-soft: rgba(125, 206, 182, 0.12);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+      --photo-ring: #2a2621;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: Manrope, system-ui, sans-serif;
-      background: var(--bg);
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 420px at 10% -10%, var(--accent-soft), transparent 55%),
+        var(--bg);
       color: var(--ink);
-      line-height: 1.55;
+      line-height: 1.6;
       min-height: 100vh;
+      transition: background 0.35s ease, color 0.35s ease;
     }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.09;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      z-index: 0;
-    }
-
     a { color: inherit; }
     img { max-width: 100%; display: block; }
+    button { font: inherit; }
 
     .page {
-      position: relative;
-      z-index: 1;
       max-width: 1120px;
       margin: 0 auto;
-      padding: 28px 22px 72px;
+      padding: 24px 22px 80px;
     }
 
     header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 16px;
-      padding-bottom: 28px;
-      border-bottom: 1px solid var(--line);
+      padding: 8px 0 28px;
     }
     .logo {
       font-family: Fraunces, Georgia, serif;
-      font-size: 20px;
-      font-weight: 500;
+      font-size: 22px;
+      font-weight: 600;
       letter-spacing: -0.03em;
       text-decoration: none;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
     }
     nav {
       display: flex;
       gap: 18px;
       color: var(--muted);
       font-size: 14px;
+      font-weight: 500;
     }
     nav a { text-decoration: none; }
     nav a:hover { color: var(--ink); }
+    .theme-toggle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: var(--bg-elev);
+      color: var(--ink);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+    .theme-toggle:hover { transform: rotate(16deg) scale(1.04); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    html[data-theme="light"] .icon-sun,
+    html[data-theme="dark"] .icon-moon { display: none; }
 
     .hero {
       display: grid;
-      grid-template-columns: 168px 1fr;
-      gap: 40px;
+      grid-template-columns: 240px 1fr;
+      gap: 48px;
       align-items: center;
-      padding: 72px 0 56px;
+      padding: 36px 0 28px;
     }
     .portrait {
-      width: 168px;
-      height: 210px;
-      border-radius: 18px;
+      width: 240px;
+      height: 300px;
+      border-radius: 28px;
       overflow: hidden;
-      background:
-        linear-gradient(180deg, var(--copper-soft), transparent 60%),
-        var(--bg-soft);
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
+      box-shadow: var(--shadow);
+      outline: 8px solid var(--photo-ring);
+      animation: photoIn 0.9s ease both;
     }
     .portrait img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-    }
-    .monogram {
-      font-family: Fraunces, Georgia, serif;
-      font-size: 52px;
-      color: var(--copper);
-      letter-spacing: -0.04em;
+      object-position: 50% 18%;
+      transform: scale(1.04);
+      animation: photoZoom 8s ease-out both;
     }
     .eyebrow {
-      color: var(--copper);
+      color: var(--accent);
       font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
+      font-weight: 700;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     h1 {
       font-family: Fraunces, Georgia, serif;
-      font-size: clamp(40px, 6vw, 68px);
-      font-weight: 500;
-      line-height: 0.95;
-      letter-spacing: -0.04em;
+      font-size: clamp(38px, 5.4vw, 62px);
+      font-weight: 600;
+      line-height: 1.02;
+      letter-spacing: -0.045em;
       margin-bottom: 18px;
     }
     .lead {
-      max-width: 620px;
+      max-width: 680px;
       color: var(--muted);
       font-size: 18px;
       margin-bottom: 28px;
     }
+    .lead strong { color: var(--ink); font-weight: 600; }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; }
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
       text-decoration: none;
       border-radius: 999px;
-      padding: 11px 16px;
+      padding: 12px 18px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       border: 1px solid var(--line);
-      transition: 0.15s ease;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
     }
+    .btn:hover { transform: translateY(-2px); }
     .btn-primary {
       background: var(--ink);
       color: var(--bg);
       border-color: var(--ink);
     }
-    .btn-primary:hover { opacity: 0.9; }
-    .btn-ghost:hover {
-      border-color: var(--copper);
-      color: var(--copper);
-    }
+    .btn-ghost { background: var(--bg-elev); }
 
-    .section { padding: 28px 0 8px; }
+    .section { padding-top: 20px; }
     .section-head {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       gap: 16px;
-      margin: 28px 0 22px;
+      margin: 36px 0 22px;
       padding-top: 28px;
       border-top: 1px solid var(--line);
     }
     .section-head h2 {
       font-family: Fraunces, Georgia, serif;
-      font-size: 32px;
-      font-weight: 500;
+      font-size: 34px;
+      font-weight: 600;
       letter-spacing: -0.03em;
     }
     .section-head span { color: var(--muted); font-size: 14px; }
 
-    .cases { display: grid; gap: 16px; }
+    .cases { display: grid; gap: 18px; }
     article {
-      background: var(--bg-soft);
+      background: var(--bg-elev);
       border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 26px;
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
     }
     .case-top {
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      align-items: baseline;
       margin-bottom: 10px;
     }
-    .num { color: var(--copper); font-size: 13px; font-weight: 700; }
+    .num { color: var(--accent); font-size: 13px; font-weight: 800; }
     .meta { color: var(--muted); font-size: 13px; }
     article h3 {
-      font-size: 22px;
+      font-family: Fraunces, Georgia, serif;
+      font-size: 28px;
+      font-weight: 600;
       letter-spacing: -0.03em;
       margin-bottom: 10px;
     }
-    article p { color: var(--muted); margin-bottom: 16px; }
+    article .intro { color: var(--muted); margin-bottom: 16px; }
     article ul {
-      color: var(--ink);
       padding-left: 18px;
       display: grid;
-      gap: 7px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin-bottom: 18px;
     }
     .tags { display: flex; flex-wrap: wrap; gap: 8px; }
     .tag {
       font-size: 12px;
+      font-weight: 600;
       color: var(--muted);
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 5px 10px;
+      padding: 6px 10px;
+      background: var(--accent-soft);
     }
 
-    .skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .skill {
-      background: var(--bg-soft);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 14px;
-    }
-
-    .about-grid {
+    .principles {
       display: grid;
-      grid-template-columns: 1.3fr 0.7fr;
-      gap: 18px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
     }
-    .panel {
-      background: var(--bg-soft);
+    .principle {
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      min-height: 180px;
+    }
+    .principle h3 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 22px;
+      margin: 8px 0 10px;
+    }
+    .principle p { color: var(--muted); }
+    .edu {
+      margin-top: 16px;
+      padding: 22px 24px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--bg-elev);
+      color: var(--muted);
+    }
+    .edu strong { color: var(--ink); }
+
+    .stack-groups { display: grid; gap: 14px; }
+    .stack-group {
+      background: var(--bg-elev);
       border: 1px solid var(--line);
       border-radius: 22px;
-      padding: 26px;
+      padding: 18px 20px;
     }
-    .panel h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
+    .stack-group h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 12px;
     }
-    .panel p { color: var(--muted); }
-    .panel p + p { margin-top: 10px; }
+    .skills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
 
     footer {
       margin-top: 48px;
@@ -247,14 +293,43 @@
       color: var(--muted);
       font-size: 14px;
     }
-    footer a { color: var(--ink); }
+    footer a { color: var(--ink); font-weight: 600; }
 
-    @media (max-width: 800px) {
-      .hero, .about-grid { grid-template-columns: 1fr; }
-      .portrait { width: 132px; height: 164px; }
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: rise 0.7s ease forwards;
+    }
+    .d1 { animation-delay: 0.08s; }
+    .d2 { animation-delay: 0.16s; }
+    .d3 { animation-delay: 0.24s; }
+    .d4 { animation-delay: 0.32s; }
+
+    @keyframes photoIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes photoZoom {
+      from { transform: scale(1.08); }
+      to { transform: scale(1.02); }
+    }
+    @keyframes rise {
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 860px) {
       nav { display: none; }
-      h1 { font-size: 42px; }
-      .hero { padding: 40px 0 32px; }
+      .hero, .principles { grid-template-columns: 1fr; }
+      .portrait { width: 180px; height: 224px; }
+      h1 { font-size: 40px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
@@ -262,26 +337,38 @@
   <div class="page">
     <header>
       <a class="logo" href="./">Егор Торопов</a>
-      <nav>
-        <a href="#work">Проекты</a>
-        <a href="#about">Опыт</a>
-        <a href="#contact">Контакты</a>
-      </nav>
+      <div class="header-right">
+        <nav>
+          <a href="#work">Проекты</a>
+          <a href="#approach">Подход</a>
+          <a href="#stack">Стек</a>
+          <a href="#contact">Контакты</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Сменить тему">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5z" />
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6.2 6.2l1.4 1.4M16.4 16.4l1.4 1.4M6.2 17.8l1.4-1.4M16.4 7.6l1.4-1.4" />
+          </svg>
+        </button>
+      </div>
     </header>
 
     <section class="hero">
-      <div class="portrait" aria-hidden="true">
-        <span class="monogram">ЕТ</span>
+      <div class="portrait">
+        <img src="photo.jpg" alt="Егор Торопов" />
       </div>
       <div>
-        <div class="eyebrow">Frontend · React · TypeScript</div>
-        <h1>Интерфейсы, которые можно развивать дальше</h1>
-        <p class="lead">
-          Больше трёх лет собираю frontend с нуля и веду его в продакшене.
-          Фокус - архитектура на Feature-Sliced Design, UI Kit и сложные B2B-сценарии:
-          личные кабинеты, формы, таблицы, документы.
+        <div class="eyebrow reveal">Frontend · React · TypeScript</div>
+        <h1 class="reveal d1">Я открываю конфигурацию, а не десятый экран</h1>
+        <p class="lead reveal d2">
+          Обычно после фразы «нужен ещё один тип документа» кто-то рисует почти такой же интерфейс с нуля.
+          Я собираю конструктор и архитектуру, чтобы продукт пережил смену требований -
+          <strong>и чтобы через год репозиторий не хотелось переписывать.</strong>
         </p>
-        <div class="actions">
+        <div class="actions reveal d3">
           <a class="btn btn-primary" href="../Toropov_Egor_Frontend.pdf">Скачать резюме</a>
           <a class="btn btn-ghost" href="https://t.me/toropovvvvvvv">Telegram</a>
           <a class="btn btn-ghost" href="mailto:toropovegor43@gmail.com">Почта</a>
@@ -292,120 +379,185 @@
     <section class="section" id="work">
       <div class="section-head">
         <h2>Проекты</h2>
-        <span>ARGO · 2023 - н.в.</span>
+        <span>ARGO · апрель 2023 - н.в.</span>
       </div>
       <div class="cases">
-        <article>
+        <article class="reveal">
           <div class="case-top">
             <span class="num">01</span>
             <span class="meta">Next.js · React · TypeScript</span>
           </div>
           <h3>Система управления персоналом</h3>
-          <p>
-            Корпоративная HR-платформа: оргструктура, доступы, КЭДО, проекты, тестирование.
-            Архитектура на FSD, общий UI Kit и конструктор форм под разные типы документов.
+          <p class="intro">
+            Корпоративная HR-платформа полного цикла: оргструктура, сотрудники, роли и доступы,
+            публикации, кадровый документооборот, проекты, задачи, тестирование и аттестация.
           </p>
           <ul>
-            <li>Спроектировал архитектуру на Feature-Sliced Design под независимые модули</li>
-            <li>Собрал UI Kit из 100+ компонентов поверх Base UI и завёл Storybook</li>
-            <li>Сделал конструктор динамических форм: новые документы подключаются по конфигурации, без переписывания UI</li>
+            <li>Спроектировал архитектуру на Feature-Sliced Design: независимые модули и общие shared-слои, чтобы команды не путались в границах кода</li>
+            <li>Собрал UI Kit из 100+ компонентов поверх Base UI: единый стиль, переиспользуемые паттерны и документация в Storybook</li>
+            <li>Сделал конструктор динамических форм: поля и таблицы настраиваются под тип документа, новые документы подключаются без переписывания UI</li>
+            <li>Закрывал клиентские сценарии целиком - от экранов оргструктуры и КЭДО до прохождения тестов и аттестации</li>
+            <li>Настроил работу с API через Orval, авторизацию на Keycloak и общие конвенции проекта, включая правила для AI-агентов</li>
+            <li>Покрывал ключевые сценарии unit-тестами на Vitest, чтобы регрессии ловить до релиза, а не на пользователях</li>
           </ul>
           <div class="tags">
             <span class="tag">FSD</span>
             <span class="tag">Base UI</span>
             <span class="tag">TanStack Query</span>
+            <span class="tag">TanStack Table</span>
             <span class="tag">Storybook</span>
+            <span class="tag">EditorJS</span>
+            <span class="tag">Orval</span>
             <span class="tag">Keycloak</span>
+            <span class="tag">Vitest</span>
           </div>
         </article>
 
-        <article>
+        <article class="reveal d1">
           <div class="case-top">
             <span class="num">02</span>
             <span class="meta">React · TypeScript · Webpack</span>
           </div>
           <h3>Налоговый мониторинг</h3>
-          <p>
+          <p class="intro">
             B2B-сервис для подготовки налоговой отчётности: крупные формы, документы,
-            электронная подпись и печать.
+            электронная подпись, просмотр деклараций и многостраничная печать.
           </p>
           <ul>
-            <li>Перевёл проект на Feature-Sliced Design</li>
-            <li>Собрал собственный UI Kit без сторонних библиотек</li>
-            <li>Оптимизировал бандл: тяжёлые сценарии вынесены из первой загрузки, размер уменьшился примерно на 25%</li>
-            <li>Подключил КриптоПро и XSL-шаблоны для просмотра и печати XML-деклараций</li>
+            <li>Перевёл проект с классической модульной структуры на Feature-Sliced Design</li>
+            <li>Собрал собственный UI Kit без сторонних UI-библиотек: кнопки, поля, формы, таблицы, календари, модалки, уведомления</li>
+            <li>Внедрил lazy loading и динамические импорты - тяжёлые сценарии ушли из первой загрузки, бандл стал легче примерно на 25%</li>
+            <li>Работал с крупными налоговыми формами и подключил электронную подпись через КриптоПро</li>
+            <li>Настроил XSL-шаблоны для преобразования XML-деклараций в HTML: просмотр в интерфейсе и печать форм</li>
           </ul>
           <div class="tags">
             <span class="tag">FSD</span>
             <span class="tag">SCSS Modules</span>
+            <span class="tag">TanStack Query</span>
+            <span class="tag">Webpack</span>
+            <span class="tag">Storybook</span>
             <span class="tag">КриптоПро</span>
             <span class="tag">XSL</span>
           </div>
         </article>
 
-        <article>
+        <article class="reveal d2">
           <div class="case-top">
             <span class="num">03</span>
             <span class="meta">React · TypeScript · MobX</span>
           </div>
           <h3>Платформа поиска работы</h3>
-          <p>
-            Сервис вакансий и резюме в сфере тендерных закупок: поиск, редактор карточек,
-            чат и встраивание в чужие сайты.
+          <p class="intro">
+            Сервис вакансий и резюме в сфере тендерных закупок: поиск, редакторы карточек,
+            чат, тесты кандидатов, журнал и встраивание в чужие сайты.
           </p>
           <ul>
-            <li>Сделал поиск с фильтрами и синхронизацией состояния с URL</li>
-            <li>Реализовал real-time чат на WebSocket</li>
-            <li>Настроил SSO с внешним личным кабинетом</li>
-            <li>Собрал встраиваемый виджет вакансий: фильтры и генерация embed-скрипта</li>
+            <li>Собрал поиск вакансий и резюме с фильтрами по профессии, региону, зарплате, опыту и графику; выбранные фильтры синхронизируются с URL</li>
+            <li>Сделал редактор вакансий и резюме с мгновенным предпросмотром карточки</li>
+            <li>Реализовал real-time чат на WebSocket для соискателей и работодателей</li>
+            <li>Внедрил модуль тестирования кандидатов с автоматической оценкой и экраны прогресса на Chart.js</li>
+            <li>Собрал информационный журнал со статьями и админ-панелью для управления контентом</li>
+            <li>Встроил React в Symfony/Twig: поиск, фильтры, списки и журнал жили на серверных страницах</li>
+            <li>Настроил SSO с внешним личным кабинетом и SEO: семантика, метаданные, Open Graph, sitemap и robots.txt</li>
+            <li>Сделал встраиваемый виджет вакансий для внешних сайтов: настройка фильтров и генерация embed-скрипта</li>
           </ul>
           <div class="tags">
             <span class="tag">WebSocket</span>
             <span class="tag">SSO</span>
             <span class="tag">Material UI</span>
+            <span class="tag">MobX</span>
             <span class="tag">SEO</span>
+            <span class="tag">Chart.js</span>
+            <span class="tag">Webpack</span>
           </div>
         </article>
       </div>
     </section>
 
-    <section class="section" id="about">
+    <section class="section" id="approach">
       <div class="section-head">
-        <h2>Ещё</h2>
-        <span>Стек и подход</span>
+        <h2>Подход</h2>
+        <span>Как я обычно встраиваюсь в команду</span>
       </div>
-      <div class="about-grid">
-        <div class="panel">
-          <h3>Как работаю</h3>
-          <p>
-            Беру задачу от уточнения требований до релиза. Пишу так, чтобы следующий человек
-            в команде не собирал архитектуру заново. Делаю code review и фиксирую общие правила.
-          </p>
-          <p>
-            ЯрГУ им. П. Г. Демидова, прикладная математика и информатика. Английский - B1.
-            Формат: удалённо, город любой.
-          </p>
+      <div class="principles">
+        <div class="principle reveal">
+          <div class="num">01</div>
+          <h3>Беру блок целиком</h3>
+          <p>От уточнения требования и оценки до релиза. Не оставляю «хвосты» между аналитикой, дизайном и продакшеном.</p>
         </div>
-        <div class="panel">
-          <h3>Стек</h3>
-          <div class="skills" style="margin-top: 8px;">
+        <div class="principle reveal d1">
+          <div class="num">02</div>
+          <h3>Сначала границы, потом скорость</h3>
+          <p>FSD, UI Kit и понятные контракты. Быстро - это когда новый сценарий ложится в уже собранную систему, а не ломает её.</p>
+        </div>
+        <div class="principle reveal d2">
+          <div class="num">03</div>
+          <h3>AI ускоряет, ответственность моя</h3>
+          <p>Использую агентов для черновика и рефакторинга. Code review, архитектуру и граничные случаи оставляю за собой.</p>
+        </div>
+      </div>
+      <div class="edu reveal d3">
+        <strong>ЯрГУ им. П. Г. Демидова</strong> · прикладная математика и информатика, 2023.
+        Русский - родной, английский - B1. Формат: удалённо, город любой.
+      </div>
+    </section>
+
+    <section class="section" id="stack">
+      <div class="section-head">
+        <h2>Стек</h2>
+        <span>То, с чем работаю каждый день</span>
+      </div>
+      <div class="stack-groups">
+        <div class="stack-group reveal">
+          <h3>Языки и платформа</h3>
+          <div class="skills">
             <span class="skill">TypeScript</span>
+            <span class="skill">JavaScript</span>
             <span class="skill">React</span>
             <span class="skill">Next.js</span>
+            <span class="skill">HTML</span>
+            <span class="skill">CSS</span>
+            <span class="skill">SCSS</span>
+          </div>
+        </div>
+        <div class="stack-group reveal d1">
+          <h3>Состояние, формы и данные</h3>
+          <div class="skills">
             <span class="skill">TanStack Query</span>
-            <span class="skill">Zustand</span>
+            <span class="skill">TanStack Table</span>
             <span class="skill">MobX</span>
+            <span class="skill">Zustand</span>
+            <span class="skill">React Hook Form</span>
+            <span class="skill">Zod</span>
+            <span class="skill">Orval</span>
+            <span class="skill">WebSocket</span>
+          </div>
+        </div>
+        <div class="stack-group reveal d2">
+          <h3>UI и продукт</h3>
+          <div class="skills">
+            <span class="skill">Base UI</span>
+            <span class="skill">Material UI</span>
+            <span class="skill">Storybook</span>
+            <span class="skill">EditorJS</span>
+            <span class="skill">Keycloak</span>
+            <span class="skill">SEO-оптимизация</span>
+          </div>
+        </div>
+        <div class="stack-group reveal d3">
+          <h3>Сборка и качество</h3>
+          <div class="skills">
             <span class="skill">Webpack</span>
             <span class="skill">Vite</span>
-            <span class="skill">Storybook</span>
-            <span class="skill">SCSS</span>
+            <span class="skill">Vitest</span>
+            <span class="skill">Git</span>
           </div>
         </div>
       </div>
     </section>
 
     <footer id="contact">
-      <span>Открыт к новым задачам</span>
+      <span>Открыт к сильным продуктовым задачам</span>
       <span>
         <a href="mailto:toropovegor43@gmail.com">toropovegor43@gmail.com</a>
         ·
@@ -413,5 +565,16 @@
       </span>
     </footer>
   </div>
+
+  <script>
+    var root = document.documentElement;
+    var toggle = document.querySelector(".theme-toggle");
+
+    toggle.addEventListener("click", function () {
+      var next = root.dataset.theme === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      localStorage.setItem("theme", next);
+    });
+  </script>
 </body>
 </html>
