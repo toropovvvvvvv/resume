@@ -11,6 +11,9 @@
   <script>
     (function () {
       document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+      window.scrollTo(0, 0);
     })();
   </script>
   <style>
@@ -21,9 +24,8 @@
       --muted: #6d665c;
       --line: rgba(28, 25, 21, 0.1);
       --accent: #1f6f5b;
-      --accent-soft: rgba(31, 111, 91, 0.1);
+      --accent-soft: rgba(31, 111, 91, 0.14);
       --shadow: 0 18px 50px rgba(50, 36, 20, 0.08);
-      --photo-ring: #efe6d6;
     }
     html[data-theme="dark"] {
       --bg: #141210;
@@ -32,20 +34,17 @@
       --muted: #b5ab9e;
       --line: rgba(244, 236, 225, 0.12);
       --accent: #7dceb6;
-      --accent-soft: rgba(125, 206, 182, 0.12);
+      --accent-soft: rgba(125, 206, 182, 0.16);
       --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
-      --photo-ring: #2a2621;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html, body { overflow-anchor: none; }
     body {
       font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-      background:
-        radial-gradient(900px 420px at 10% -10%, var(--accent-soft), transparent 55%),
-        var(--bg);
+      background: var(--bg);
       color: var(--ink);
-      line-height: 1.6;
+      line-height: 1.65;
       min-height: 100vh;
       transition: background 0.35s ease, color 0.35s ease;
     }
@@ -53,7 +52,22 @@
     img { max-width: 100%; display: block; }
     button { font: inherit; }
 
+    .glow {
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, var(--accent-soft), transparent 68%);
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      opacity: 0.9;
+      transition: left 0.25s ease, top 0.25s ease;
+    }
+
     .page {
+      position: relative;
+      z-index: 1;
       max-width: 1120px;
       margin: 0 auto;
       padding: 24px 22px 80px;
@@ -73,11 +87,7 @@
       letter-spacing: -0.03em;
       text-decoration: none;
     }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
+    .header-right { display: flex; align-items: center; gap: 18px; }
     nav {
       display: flex;
       gap: 18px;
@@ -97,7 +107,7 @@
       cursor: pointer;
       display: grid;
       place-items: center;
-      transition: transform 0.25s ease, background 0.25s ease;
+      transition: transform 0.25s ease;
     }
     .theme-toggle:hover { transform: rotate(16deg) scale(1.04); }
     .theme-toggle svg { width: 18px; height: 18px; }
@@ -106,27 +116,36 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 240px 1fr;
-      gap: 48px;
-      align-items: center;
-      padding: 36px 0 28px;
+      grid-template-columns: 280px 1fr;
+      gap: 40px;
+      align-items: end;
+      padding: 20px 0 36px;
     }
     .portrait {
-      width: 240px;
-      height: 300px;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      outline: 8px solid var(--photo-ring);
-      animation: photoIn 0.9s ease both;
+      position: relative;
+      height: 360px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .portrait-blob {
+      position: absolute;
+      inset: 18% 4% 0;
+      background: linear-gradient(160deg, var(--accent-soft), transparent 70%);
+      border-radius: 46% 54% 48% 52%;
+      animation: blob 10s ease-in-out infinite;
+      z-index: 0;
     }
     .portrait img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 50% 18%;
-      transform: scale(1.04);
-      animation: photoZoom 8s ease-out both;
+      position: relative;
+      z-index: 1;
+      height: 360px;
+      width: auto;
+      max-width: none;
+      object-fit: contain;
+      object-position: center bottom;
+      filter: drop-shadow(0 18px 30px rgba(28, 25, 21, 0.16));
+      animation: photoIn 0.9s ease both;
     }
     .eyebrow {
       color: var(--accent);
@@ -138,19 +157,19 @@
     }
     h1 {
       font-family: Fraunces, Georgia, serif;
-      font-size: clamp(38px, 5.4vw, 62px);
+      font-size: clamp(36px, 5vw, 58px);
       font-weight: 600;
-      line-height: 1.02;
-      letter-spacing: -0.045em;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
       margin-bottom: 18px;
     }
     .lead {
       max-width: 680px;
       color: var(--muted);
-      font-size: 18px;
+      font-size: 17px;
       margin-bottom: 28px;
     }
-    .lead strong { color: var(--ink); font-weight: 600; }
+    .lead + .lead { margin-top: -14px; }
     .actions { display: flex; flex-wrap: wrap; gap: 10px; }
     .btn {
       display: inline-flex;
@@ -161,17 +180,13 @@
       font-size: 14px;
       font-weight: 700;
       border: 1px solid var(--line);
-      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+      transition: transform 0.2s ease, background 0.2s ease;
     }
     .btn:hover { transform: translateY(-2px); }
-    .btn-primary {
-      background: var(--ink);
-      color: var(--bg);
-      border-color: var(--ink);
-    }
+    .btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
     .btn-ghost { background: var(--bg-elev); }
 
-    .section { padding-top: 20px; }
+    .section { padding-top: 12px; }
     .section-head {
       display: flex;
       justify-content: space-between;
@@ -197,12 +212,7 @@
       padding: 28px;
       box-shadow: var(--shadow);
     }
-    .case-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
+    .case-top { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
     .num { color: var(--accent); font-size: 13px; font-weight: 800; }
     .meta { color: var(--muted); font-size: 13px; }
     article h3 {
@@ -213,12 +223,7 @@
       margin-bottom: 10px;
     }
     article .intro { color: var(--muted); margin-bottom: 16px; }
-    article ul {
-      padding-left: 18px;
-      display: grid;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
+    article ul { padding-left: 18px; display: grid; gap: 8px; margin-bottom: 18px; }
     .tags { display: flex; flex-wrap: wrap; gap: 8px; }
     .tag {
       font-size: 12px;
@@ -230,17 +235,13 @@
       background: var(--accent-soft);
     }
 
-    .principles {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
+    .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .principle {
       background: var(--bg-elev);
       border: 1px solid var(--line);
       border-radius: 24px;
       padding: 24px;
-      min-height: 180px;
+      min-height: 188px;
     }
     .principle h3 {
       font-family: Fraunces, Georgia, serif;
@@ -258,28 +259,40 @@
     }
     .edu strong { color: var(--ink); }
 
-    .stack-groups { display: grid; gap: 14px; }
-    .stack-group {
-      background: var(--bg-elev);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 18px 20px;
+    .stack-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
     }
-    .stack-group h3 {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-    .skills { display: flex; flex-wrap: wrap; gap: 8px; }
     .skill {
-      background: var(--bg);
+      appearance: none;
       border: 1px solid var(--line);
+      background: var(--bg-elev);
+      color: var(--ink);
       border-radius: 999px;
-      padding: 8px 12px;
+      padding: 10px 14px;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.25s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      animation: float 6s ease-in-out infinite;
+    }
+    .skill:nth-child(3n) { animation-delay: -1.4s; }
+    .skill:nth-child(4n) { animation-delay: -2.8s; font-size: 16px; padding: 12px 16px; }
+    .skill:nth-child(5n) { animation-delay: -4.1s; }
+    .skill:hover { transform: translateY(-4px) scale(1.04); }
+    .skill.is-active {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+      transform: translateY(-4px);
+    }
+    .stack-note {
+      min-height: 52px;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 16px;
     }
 
     footer {
@@ -297,43 +310,43 @@
 
     .reveal {
       opacity: 0;
-      transform: translateY(18px);
+      transform: translateY(16px);
       animation: rise 0.7s ease forwards;
     }
     .d1 { animation-delay: 0.08s; }
     .d2 { animation-delay: 0.16s; }
     .d3 { animation-delay: 0.24s; }
-    .d4 { animation-delay: 0.32s; }
 
     @keyframes photoIn {
-      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: none; }
     }
-    @keyframes photoZoom {
-      from { transform: scale(1.08); }
-      to { transform: scale(1.02); }
+    @keyframes blob {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(8deg) scale(1.06); }
     }
-    @keyframes rise {
-      to { opacity: 1; transform: none; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
+    @keyframes rise { to { opacity: 1; transform: none; } }
 
     @media (max-width: 860px) {
       nav { display: none; }
       .hero, .principles { grid-template-columns: 1fr; }
-      .portrait { width: 180px; height: 224px; }
-      h1 { font-size: 40px; }
+      .portrait, .portrait img { height: 280px; }
+      h1 { font-size: 36px; }
+      .glow { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-      }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
       .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
 <body>
+  <div class="glow" aria-hidden="true"></div>
   <div class="page">
     <header>
       <a class="logo" href="./">Егор Торопов</a>
@@ -358,17 +371,22 @@
 
     <section class="hero">
       <div class="portrait">
-        <img src="photo.jpg" alt="Егор Торопов" />
+        <div class="portrait-blob"></div>
+        <img src="photo.png" alt="Егор Торопов" />
       </div>
       <div>
-        <div class="eyebrow reveal">Frontend · React · TypeScript</div>
-        <h1 class="reveal d1">Я открываю конфигурацию, а не десятый экран</h1>
-        <p class="lead reveal d2">
-          Обычно после фразы «нужен ещё один тип документа» кто-то рисует почти такой же интерфейс с нуля.
-          Я собираю конструктор и архитектуру, чтобы продукт пережил смену требований -
-          <strong>и чтобы через год репозиторий не хотелось переписывать.</strong>
+        <div class="eyebrow">Frontend · React · TypeScript</div>
+        <h1>Собираю рабочие интерфейсы, а не витрины</h1>
+        <p class="lead">
+          Больше трёх лет делаю frontend в продуктовых командах. Обычно это личные кабинеты,
+          крупные формы, таблицы и документы - вещи, которыми люди пользуются каждый день, а не раз в квартал.
         </p>
-        <div class="actions reveal d3">
+        <p class="lead">
+          Мне важно довести задачу до конца: понять, зачем она, собрать аккуратно и не оставить после себя путаницу.
+          Хороший интерфейс для меня - тот, в котором удобно работать сегодня и в который не страшно вернуться через полгода.
+          Если систему можно сделать так, чтобы в неё спокойно добавляли новое - лучше сразу так и сделать.
+        </p>
+        <div class="actions">
           <a class="btn btn-primary" href="../Toropov_Egor_Frontend.pdf">Скачать резюме</a>
           <a class="btn btn-ghost" href="https://t.me/toropovvvvvvv">Telegram</a>
           <a class="btn btn-ghost" href="mailto:toropovegor43@gmail.com">Почта</a>
@@ -382,7 +400,7 @@
         <span>ARGO · апрель 2023 - н.в.</span>
       </div>
       <div class="cases">
-        <article class="reveal">
+        <article>
           <div class="case-top">
             <span class="num">01</span>
             <span class="meta">Next.js · React · TypeScript</span>
@@ -413,7 +431,7 @@
           </div>
         </article>
 
-        <article class="reveal d1">
+        <article>
           <div class="case-top">
             <span class="num">02</span>
             <span class="meta">React · TypeScript · Webpack</span>
@@ -441,7 +459,7 @@
           </div>
         </article>
 
-        <article class="reveal d2">
+        <article>
           <div class="case-top">
             <span class="num">03</span>
             <span class="meta">React · TypeScript · MobX</span>
@@ -480,23 +498,23 @@
         <span>Как я обычно встраиваюсь в команду</span>
       </div>
       <div class="principles">
-        <div class="principle reveal">
+        <div class="principle">
           <div class="num">01</div>
           <h3>Беру блок целиком</h3>
           <p>От уточнения требования и оценки до релиза. Не оставляю «хвосты» между аналитикой, дизайном и продакшеном.</p>
         </div>
-        <div class="principle reveal d1">
+        <div class="principle">
           <div class="num">02</div>
-          <h3>Сначала границы, потом скорость</h3>
-          <p>FSD, UI Kit и понятные контракты. Быстро - это когда новый сценарий ложится в уже собранную систему, а не ломает её.</p>
+          <h3>Сначала смотрю на целое</h3>
+          <p>Перед новой задачей прикидываю, как она сядет в текущий проект. Если лепить поверх - через месяц никто не вспомнит, почему всё так сложно.</p>
         </div>
-        <div class="principle reveal d2">
+        <div class="principle">
           <div class="num">03</div>
           <h3>AI ускоряет, ответственность моя</h3>
           <p>Использую агентов для черновика и рефакторинга. Code review, архитектуру и граничные случаи оставляю за собой.</p>
         </div>
       </div>
-      <div class="edu reveal d3">
+      <div class="edu">
         <strong>ЯрГУ им. П. Г. Демидова</strong> · прикладная математика и информатика, 2023.
         Русский - родной, английский - B1. Формат: удалённо, город любой.
       </div>
@@ -505,55 +523,36 @@
     <section class="section" id="stack">
       <div class="section-head">
         <h2>Стек</h2>
-        <span>То, с чем работаю каждый день</span>
+        <span>Нажми на технологию</span>
       </div>
-      <div class="stack-groups">
-        <div class="stack-group reveal">
-          <h3>Языки и платформа</h3>
-          <div class="skills">
-            <span class="skill">TypeScript</span>
-            <span class="skill">JavaScript</span>
-            <span class="skill">React</span>
-            <span class="skill">Next.js</span>
-            <span class="skill">HTML</span>
-            <span class="skill">CSS</span>
-            <span class="skill">SCSS</span>
-          </div>
-        </div>
-        <div class="stack-group reveal d1">
-          <h3>Состояние, формы и данные</h3>
-          <div class="skills">
-            <span class="skill">TanStack Query</span>
-            <span class="skill">TanStack Table</span>
-            <span class="skill">MobX</span>
-            <span class="skill">Zustand</span>
-            <span class="skill">React Hook Form</span>
-            <span class="skill">Zod</span>
-            <span class="skill">Orval</span>
-            <span class="skill">WebSocket</span>
-          </div>
-        </div>
-        <div class="stack-group reveal d2">
-          <h3>UI и продукт</h3>
-          <div class="skills">
-            <span class="skill">Base UI</span>
-            <span class="skill">Material UI</span>
-            <span class="skill">Storybook</span>
-            <span class="skill">EditorJS</span>
-            <span class="skill">Keycloak</span>
-            <span class="skill">SEO-оптимизация</span>
-          </div>
-        </div>
-        <div class="stack-group reveal d3">
-          <h3>Сборка и качество</h3>
-          <div class="skills">
-            <span class="skill">Webpack</span>
-            <span class="skill">Vite</span>
-            <span class="skill">Vitest</span>
-            <span class="skill">Git</span>
-          </div>
-        </div>
+      <div class="stack-cloud">
+        <button class="skill" type="button" data-note="Основной язык. Типы помогают не держать в голове весь контракт API.">TypeScript</button>
+        <button class="skill" type="button" data-note="Там, где типы ни к чему, или в старых кусках кода.">JavaScript</button>
+        <button class="skill" type="button" data-note="Основной инструмент для интерфейсов. Хуки, состояние, сложные формы и таблицы.">React</button>
+        <button class="skill" type="button" data-note="HR-платформа на App Router: маршруты, серверная часть, удобная структура страниц.">Next.js</button>
+        <button class="skill" type="button" data-note="Семантика и доступность. Особенно важно в больших кабинетах.">HTML</button>
+        <button class="skill" type="button" data-note="Вёрстка без лишней магии: сетки, состояния, адаптив.">CSS</button>
+        <button class="skill" type="button" data-note="Модули и BEM, когда стили живут рядом с компонентом.">SCSS</button>
+        <button class="skill" type="button" data-note="Серверное состояние и кеш запросов. Чтобы экран не дёргал бэкенд по пустякам.">TanStack Query</button>
+        <button class="skill" type="button" data-note="Тяжёлые таблицы: сортировка, фильтры, большие объёмы данных.">TanStack Table</button>
+        <button class="skill" type="button" data-note="Состояние в платформе поиска работы. Удобно, когда данных много и они связаны.">MobX</button>
+        <button class="skill" type="button" data-note="Локальное состояние без церемоний. Беру, когда стор должен быть маленьким.">Zustand</button>
+        <button class="skill" type="button" data-note="Сложные формы: валидация, ошибки, контролируемые поля.">React Hook Form</button>
+        <button class="skill" type="button" data-note="Схемы данных. Чтобы контракт был один и на клиенте, и рядом с формой.">Zod</button>
+        <button class="skill" type="button" data-note="Генерация API-клиента из OpenAPI. Меньше ручной писанины и рассинхрона с бэком.">Orval</button>
+        <button class="skill" type="button" data-note="Чат в реальном времени. Сообщения без перезагрузки страницы.">WebSocket</button>
+        <button class="skill" type="button" data-note="База для UI Kit в HR: доступные примитивы, поверх них - свои паттерны.">Base UI</button>
+        <button class="skill" type="button" data-note="Платформа поиска работы: быстрый старт интерфейса на готовых компонентах.">Material UI</button>
+        <button class="skill" type="button" data-note="Живая документация UI Kit. Удобно и дизайнеру, и тому, кто подключается к проекту.">Storybook</button>
+        <button class="skill" type="button" data-note="Редактор контента в HR: статьи и блоки без отдельной админки с нуля.">EditorJS</button>
+        <button class="skill" type="button" data-note="Авторизация и SSO. Единый вход, роли, доступы.">Keycloak</button>
+        <button class="skill" type="button" data-note="Метаданные, Open Graph, sitemap, семантика - чтобы страницы нормально открывались и искались.">SEO-оптимизация</button>
+        <button class="skill" type="button" data-note="Сборка налогового проекта и платформы поиска работы.">Webpack</button>
+        <button class="skill" type="button" data-note="Быстрая локальная разработка и современная сборка.">Vite</button>
+        <button class="skill" type="button" data-note="Unit-тесты на ключевые сценарии, чтобы ловить регрессии до релиза.">Vitest</button>
+        <button class="skill" type="button" data-note="Ветки, ревью, аккуратная история. Без этого команда быстро разъезжается.">Git</button>
       </div>
+      <p class="stack-note" id="stack-note">Нажми на технологию - коротко расскажу, где она у меня была нужна.</p>
     </section>
 
     <footer id="contact">
@@ -567,13 +566,41 @@
   </div>
 
   <script>
-    var root = document.documentElement;
-    var toggle = document.querySelector(".theme-toggle");
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.addEventListener("load", function () {
+      window.scrollTo(0, 0);
+    });
 
-    toggle.addEventListener("click", function () {
+    var root = document.documentElement;
+    document.querySelector(".theme-toggle").addEventListener("click", function () {
       var next = root.dataset.theme === "dark" ? "light" : "dark";
       root.dataset.theme = next;
       localStorage.setItem("theme", next);
+    });
+
+    document.querySelectorAll("nav a").forEach(function (link) {
+      link.addEventListener("click", function (event) {
+        var target = document.querySelector(link.getAttribute("href"));
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    var note = document.getElementById("stack-note");
+    var skills = document.querySelectorAll(".skill");
+    skills.forEach(function (skill) {
+      skill.addEventListener("click", function () {
+        skills.forEach(function (item) { item.classList.remove("is-active"); });
+        skill.classList.add("is-active");
+        note.textContent = skill.dataset.note;
+      });
+    });
+
+    var glow = document.querySelector(".glow");
+    window.addEventListener("pointermove", function (event) {
+      glow.style.left = event.clientX + "px";
+      glow.style.top = event.clientY + "px";
     });
   </script>
 </body>
