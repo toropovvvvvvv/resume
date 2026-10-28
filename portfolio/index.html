@@ -7,8 +7,8 @@
   <meta name="description" content="Frontend-разработчик на React и TypeScript. Архитектура, UI Kit, сложные B2B-интерфейсы." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" href="photo.png" fetchpriority="high" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=optional" rel="stylesheet" />
+  <link rel="preload" as="image" href="photo.webp" type="image/webp" media="(min-width: 861px)" fetchpriority="high" />
   <script>
     (function () {
       document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -39,10 +39,27 @@
       --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
     }
 
+    @font-face {
+      font-family: "Jakarta Fallback";
+      src: local("Segoe UI"), local("Helvetica Neue"), local("Arial");
+      size-adjust: 100.5%;
+      ascent-override: 95%;
+      descent-override: 24%;
+      line-gap-override: 0%;
+    }
+    @font-face {
+      font-family: "Fraunces Fallback";
+      src: local("Georgia"), local("Times New Roman");
+      size-adjust: 102%;
+      ascent-override: 90%;
+      descent-override: 22%;
+      line-gap-override: 0%;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { overflow-anchor: none; }
     body {
-      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      font-family: "Plus Jakarta Sans", "Jakarta Fallback", "Segoe UI", system-ui, sans-serif;
       background: var(--bg);
       color: var(--ink);
       line-height: 1.65;
@@ -54,6 +71,7 @@
     button { font: inherit; }
 
     .glow {
+      display: none;
       position: fixed;
       width: 420px;
       height: 420px;
@@ -65,6 +83,7 @@
       opacity: 0.9;
       transition: left 0.25s ease, top 0.25s ease;
     }
+    html[data-theme="dark"] .glow { display: block; }
 
     .page {
       position: relative;
@@ -82,7 +101,7 @@
       padding: 8px 0 28px;
     }
     .logo {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Fraunces, "Fraunces Fallback", Georgia, serif;
       font-size: 22px;
       font-weight: 600;
       letter-spacing: -0.03em;
@@ -143,7 +162,7 @@
       margin-bottom: 14px;
     }
     h1 {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Fraunces, "Fraunces Fallback", Georgia, serif;
       font-size: clamp(36px, 5vw, 58px);
       font-weight: 600;
       line-height: 1.05;
@@ -184,7 +203,7 @@
       border-top: 1px solid var(--line);
     }
     .section-head h2 {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Fraunces, "Fraunces Fallback", Georgia, serif;
       font-size: 34px;
       font-weight: 600;
       letter-spacing: -0.03em;
@@ -203,7 +222,7 @@
     .num { color: var(--accent); font-size: 13px; font-weight: 800; }
     .meta { color: var(--muted); font-size: 13px; }
     article h3 {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Fraunces, "Fraunces Fallback", Georgia, serif;
       font-size: 28px;
       font-weight: 600;
       letter-spacing: -0.03em;
@@ -231,7 +250,7 @@
       min-height: 188px;
     }
     .principle h3 {
-      font-family: Fraunces, Georgia, serif;
+      font-family: Fraunces, "Fraunces Fallback", Georgia, serif;
       font-size: 22px;
       margin: 8px 0 10px;
     }
@@ -296,9 +315,7 @@
     footer a { color: var(--ink); font-weight: 600; }
 
     .reveal {
-      opacity: 0;
-      transform: translateY(16px);
-      animation: rise 0.7s ease forwards;
+      animation: rise 0.7s ease both;
     }
     .d1 { animation-delay: 0.08s; }
     .d2 { animation-delay: 0.16s; }
@@ -308,19 +325,21 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
     }
-    @keyframes rise { to { opacity: 1; transform: none; } }
+    @keyframes rise {
+      from { transform: translateY(10px); }
+      to { transform: none; }
+    }
 
     @media (max-width: 860px) {
       nav { display: none; }
       .hero, .principles { grid-template-columns: 1fr; }
-      .portrait { width: 220px; height: 280px; }
+      .portrait { display: none; }
       h1 { font-size: 36px; }
-      .glow { display: none; }
+      html[data-theme="dark"] .glow { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
-      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
@@ -350,7 +369,7 @@
 
     <section class="hero">
       <div class="portrait">
-        <img src="photo.png" alt="Егор Торопов" width="617" height="790" fetchpriority="high" decoding="async" />
+        <img src="photo.webp" alt="Егор Торопов" width="617" height="790" fetchpriority="high" decoding="sync" loading="eager" />
       </div>
       <div>
         <div class="eyebrow">Frontend · React · TypeScript</div>
@@ -577,6 +596,7 @@
 
     var glow = document.querySelector(".glow");
     window.addEventListener("pointermove", function (event) {
+      if (root.dataset.theme !== "dark") return;
       glow.style.left = event.clientX + "px";
       glow.style.top = event.clientY + "px";
     });
