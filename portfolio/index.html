@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="photo.png" fetchpriority="high" />
   <script>
     (function () {
       document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
@@ -122,30 +123,16 @@
       padding: 20px 0 36px;
     }
     .portrait {
-      position: relative;
+      width: 280px;
       height: 360px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
-    .portrait-blob {
-      position: absolute;
-      inset: 18% 4% 0;
-      background: linear-gradient(160deg, var(--accent-soft), transparent 70%);
-      border-radius: 46% 54% 48% 52%;
-      animation: blob 10s ease-in-out infinite;
-      z-index: 0;
+      border-radius: 32px;
+      overflow: hidden;
     }
     .portrait img {
-      position: relative;
-      z-index: 1;
-      height: 360px;
-      width: auto;
-      max-width: none;
-      object-fit: contain;
-      object-position: center bottom;
-      filter: drop-shadow(0 18px 30px rgba(28, 25, 21, 0.16));
-      animation: photoIn 0.9s ease both;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
     }
     .eyebrow {
       color: var(--accent);
@@ -317,14 +304,6 @@
     .d2 { animation-delay: 0.16s; }
     .d3 { animation-delay: 0.24s; }
 
-    @keyframes photoIn {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: none; }
-    }
-    @keyframes blob {
-      0%, 100% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(8deg) scale(1.06); }
-    }
     @keyframes float {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
@@ -334,7 +313,7 @@
     @media (max-width: 860px) {
       nav { display: none; }
       .hero, .principles { grid-template-columns: 1fr; }
-      .portrait, .portrait img { height: 280px; }
+      .portrait { width: 220px; height: 280px; }
       h1 { font-size: 36px; }
       .glow { display: none; }
     }
@@ -371,15 +350,14 @@
 
     <section class="hero">
       <div class="portrait">
-        <div class="portrait-blob"></div>
-        <img src="photo.png" alt="Егор Торопов" />
+        <img src="photo.png" alt="Егор Торопов" width="617" height="790" fetchpriority="high" decoding="async" />
       </div>
       <div>
         <div class="eyebrow">Frontend · React · TypeScript</div>
-        <h1>Собираю рабочие интерфейсы, а не витрины</h1>
+        <h1>Собираю рабочие интерфейсы и люблю, когда работа сделана хорошо</h1>
         <p class="lead">
-          Больше трёх лет делаю frontend в продуктовых командах. Обычно это личные кабинеты,
-          крупные формы, таблицы и документы - вещи, которыми люди пользуются каждый день, а не раз в квартал.
+          Больше трёх лет делаю frontend в продуктовых командах. Беру сложные куски продукта
+          и довожу их до стабильного релиза: от архитектуры и UI до момента, когда этим уже пользуются.
         </p>
         <p class="lead">
           Мне важно довести задачу до конца: понять, зачем она, собрать аккуратно и не оставить после себя путаницу.
@@ -505,13 +483,13 @@
         </div>
         <div class="principle">
           <div class="num">02</div>
-          <h3>Сначала смотрю на целое</h3>
-          <p>Перед новой задачей прикидываю, как она сядет в текущий проект. Если лепить поверх - через месяц никто не вспомнит, почему всё так сложно.</p>
+          <h3>Лучше спросить сразу</h3>
+          <p>Если в задаче дырка или решение выйдет хрупким, говорю об этом. Десять минут разговора экономят неделю переделок.</p>
         </div>
         <div class="principle">
           <div class="num">03</div>
           <h3>AI ускоряет, ответственность моя</h3>
-          <p>Использую агентов для черновика и рефакторинга. Code review, архитектуру и граничные случаи оставляю за собой.</p>
+          <p>Использую агентов, чтобы быстрее набросать код и пройтись по рефакторингу. Code review, архитектуру и граничные случаи оставляю за собой.</p>
         </div>
       </div>
       <div class="edu">
@@ -528,31 +506,31 @@
       <div class="stack-cloud">
         <button class="skill" type="button" data-note="Основной язык. Типы помогают не держать в голове весь контракт API.">TypeScript</button>
         <button class="skill" type="button" data-note="Там, где типы ни к чему, или в старых кусках кода.">JavaScript</button>
-        <button class="skill" type="button" data-note="Основной инструмент для интерфейсов. Хуки, состояние, сложные формы и таблицы.">React</button>
-        <button class="skill" type="button" data-note="HR-платформа на App Router: маршруты, серверная часть, удобная структура страниц.">Next.js</button>
-        <button class="skill" type="button" data-note="Семантика и доступность. Особенно важно в больших кабинетах.">HTML</button>
+        <button class="skill" type="button" data-note="Основной инструмент для интерфейсов: хуки, состояние, сложные формы и таблицы.">React</button>
+        <button class="skill" type="button" data-note="Маршруты, серверный рендер и нормальная структура страниц.">Next.js</button>
+        <button class="skill" type="button" data-note="Семантика и доступность. Чтобы интерфейс читался и людьми, и браузером.">HTML</button>
         <button class="skill" type="button" data-note="Вёрстка без лишней магии: сетки, состояния, адаптив.">CSS</button>
         <button class="skill" type="button" data-note="Модули и BEM, когда стили живут рядом с компонентом.">SCSS</button>
         <button class="skill" type="button" data-note="Серверное состояние и кеш запросов. Чтобы экран не дёргал бэкенд по пустякам.">TanStack Query</button>
         <button class="skill" type="button" data-note="Тяжёлые таблицы: сортировка, фильтры, большие объёмы данных.">TanStack Table</button>
-        <button class="skill" type="button" data-note="Состояние в платформе поиска работы. Удобно, когда данных много и они связаны.">MobX</button>
+        <button class="skill" type="button" data-note="Состояние, когда данных много и они связаны между собой.">MobX</button>
         <button class="skill" type="button" data-note="Локальное состояние без церемоний. Беру, когда стор должен быть маленьким.">Zustand</button>
         <button class="skill" type="button" data-note="Сложные формы: валидация, ошибки, контролируемые поля.">React Hook Form</button>
         <button class="skill" type="button" data-note="Схемы данных. Чтобы контракт был один и на клиенте, и рядом с формой.">Zod</button>
         <button class="skill" type="button" data-note="Генерация API-клиента из OpenAPI. Меньше ручной писанины и рассинхрона с бэком.">Orval</button>
-        <button class="skill" type="button" data-note="Чат в реальном времени. Сообщения без перезагрузки страницы.">WebSocket</button>
-        <button class="skill" type="button" data-note="База для UI Kit в HR: доступные примитивы, поверх них - свои паттерны.">Base UI</button>
-        <button class="skill" type="button" data-note="Платформа поиска работы: быстрый старт интерфейса на готовых компонентах.">Material UI</button>
+        <button class="skill" type="button" data-note="Реальное время: чат, статусы, живые обновления без перезагрузки.">WebSocket</button>
+        <button class="skill" type="button" data-note="Примитивы для своего UI Kit: доступность и контроль над стилем.">Base UI</button>
+        <button class="skill" type="button" data-note="Готовые компоненты, когда нужно быстро собрать интерфейс.">Material UI</button>
         <button class="skill" type="button" data-note="Живая документация UI Kit. Удобно и дизайнеру, и тому, кто подключается к проекту.">Storybook</button>
-        <button class="skill" type="button" data-note="Редактор контента в HR: статьи и блоки без отдельной админки с нуля.">EditorJS</button>
-        <button class="skill" type="button" data-note="Авторизация и SSO. Единый вход, роли, доступы.">Keycloak</button>
+        <button class="skill" type="button" data-note="Блочный редактор контента, когда нужна гибкая вёрстка текста.">EditorJS</button>
+        <button class="skill" type="button" data-note="Авторизация и SSO: единый вход, роли, доступы.">Keycloak</button>
         <button class="skill" type="button" data-note="Метаданные, Open Graph, sitemap, семантика - чтобы страницы нормально открывались и искались.">SEO-оптимизация</button>
-        <button class="skill" type="button" data-note="Сборка налогового проекта и платформы поиска работы.">Webpack</button>
+        <button class="skill" type="button" data-note="Сборка, когда проект уже живёт на зрелом бандлере.">Webpack</button>
         <button class="skill" type="button" data-note="Быстрая локальная разработка и современная сборка.">Vite</button>
         <button class="skill" type="button" data-note="Unit-тесты на ключевые сценарии, чтобы ловить регрессии до релиза.">Vitest</button>
         <button class="skill" type="button" data-note="Ветки, ревью, аккуратная история. Без этого команда быстро разъезжается.">Git</button>
       </div>
-      <p class="stack-note" id="stack-note">Нажми на технологию - коротко расскажу, где она у меня была нужна.</p>
+      <p class="stack-note" id="stack-note">Нажми на технологию - коротко расскажу, для чего её использую.</p>
     </section>
 
     <footer id="contact">
